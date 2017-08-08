@@ -105,15 +105,16 @@ view args = do
       Nothing   -> target ++ " does not exist\n"
       Just recp -> showRecipe recp servings
 
+getTagList :: [Recipe] -> [String]
+getTagList = nub . concat . (map  Types.tags)
+
 listTags :: [String] -> IO ()
 listTags _ = do
   recipes <- getRecipeBook
-  let allTags    = map Types.tags recipes
-      uniqueTags = nub $ concat allTags
-      size       = length $ show $ length uniqueTags
-      indices    = map (padLeft size . show) [1..]
-  putStr $ unlines $ zipWith (\ i -> ((i ++ ". ") ++)) indices uniqueTags
-
+  let tagList = getTagList recipes
+      size    = length $ show $ length tagList
+      indices = map (padLeft size . show) [1..]
+  putStr $ unlines $ zipWith (\ i -> ((i ++ ". ") ++)) indices tagList
 
 list :: [String] -> IO ()
 list _  = do
